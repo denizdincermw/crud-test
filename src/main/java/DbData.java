@@ -28,7 +28,7 @@ public class DbData {
         }
     }*/
 
-    public DbData(){
+    public DbData() {
 
         headers = new ArrayList<>();
         contexts = new ArrayList<>();
@@ -38,30 +38,36 @@ public class DbData {
         getData();
     }
 
-    public String getHeader(int index){
+    public String getHeader(int index) {
         return headers.get(index);
     }
 
-    public String getContext(int index){
+    public String getContext(int index) {
         return contexts.get(index);
     }
-    public Date getDate(int index){
+
+    public Date getDate(int index) {
         return dates.get(index);
     }
-    public Integer getId(int index){return ids.get(index);}
-    public int getHeaderListSize(){
+
+    public Integer getId(int index) {
+        return ids.get(index);
+    }
+
+    public int getHeaderListSize() {
         return headers.size();
     }
-    public int getConextListSize(){
+
+    public int getConextListSize() {
         return contexts.size();
     }
 
-    public void getData(){
-        dbUrl="jdbc:mysql://avnadmin:AVNS_b1GW5bgz7-zCbovjbiz@approject-dannyzincher-a05d.b.aivencloud.com:28101/defaultdb?ssl-mode=REQUIRED";
-        dbUser="avnadmin";
-        dbPass="AVNS_b1GW5bgz7-zCbovjbiz";
+    public void getData() {
+        dbUrl = "jdbc:mysql://avnadmin:AVNS_b1GW5bgz7-zCbovjbiz@approject-dannyzincher-a05d.b.aivencloud.com:28101/defaultdb?ssl-mode=REQUIRED";
+        dbUser = "avnadmin";
+        dbPass = "AVNS_b1GW5bgz7-zCbovjbiz";
 
-        try{
+        try {
             Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
             PreparedStatement prestmt = con.prepareStatement("SELECT * FROM blog");
             ResultSet rs = prestmt.executeQuery();
@@ -69,51 +75,61 @@ public class DbData {
             contexts.clear();
             dates.clear();
             ids.clear();
-            while(rs.next()){
+            while (rs.next()) {
                 headers.add(rs.getString("header"));
-                contexts.add (rs.getString("context"));
+                contexts.add(rs.getString("context"));
                 dates.add(rs.getDate("date"));
                 ids.add(rs.getInt("id"));
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
 
-    public void setAllData(String newHeader,String newContext,Date newDate, Integer newId){
-        try{
+    public void setAllData(String newHeader, String newContext, Date newDate, Integer newId) {
+        try {
             Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
             PreparedStatement prestmt = con.prepareStatement("INSERT INTO `blog`(header, context, date, id) VALUES (?,?,?,?) ");
 
-            prestmt.setString(1,newHeader);
-            prestmt.setString(2,newContext);
-            prestmt.setDate(3,newDate);
-            prestmt.setInt(4,newId);
+            prestmt.setString(1, newHeader);
+            prestmt.setString(2, newContext);
+            prestmt.setDate(3, newDate);
+            prestmt.setInt(4, newId);
 
             prestmt.executeUpdate();
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void removeAllData(Integer theId){
+    public void removeAllData(Integer theId) {
 
-        try{
+        try {
             Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-            PreparedStatement prestmt = con.prepareStatement("DELETE FROM blog WHERE id=?; ");
 
-            prestmt.setInt(1,theId);
+            if (theId == null || theId <= 0) {
+                throw new IllegalArgumentException("The id must be a positive integer.");
+            }
 
-            prestmt.executeUpdate();
+            PreparedStatement prestmt = con.prepareStatement("DELETE FROM blog WHERE id=?");
+            prestmt.setInt(1, theId);
 
-        }catch(SQLException e){
-            throw new RuntimeException(e);
+            int rowsAffected = prestmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("No rows were affected. The id might not exist in the blog table.");
+            } else {
+                System.out.println("Deleted " + rowsAffected + " row(s) from the blog table.");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("There was a problem connecting to the database or executing the query.", e);
         }
-
     }
 
-    public String getAllDataById(Integer theId){
+
+    public String getAllDataById(Integer theId) {
 
         String header;
         String context;
@@ -121,30 +137,30 @@ public class DbData {
         Integer id;
         String stringToRemove = null;
 
-        try{
+        try {
             Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
             PreparedStatement prestmt = con.prepareStatement("SELECT * FROM blog WHERE id=?; ");
 
-            prestmt.setInt(1,theId);
+            prestmt.setInt(1, theId);
             ResultSet rs = prestmt.executeQuery();
             prestmt.executeUpdate();
 
-            while(rs.next()){
-                header=rs.getString("header");
-                context=rs.getString("context");
-                date=rs.getDate("date");
-                id=rs.getInt("id");
-                stringToRemove = "Header " + ": " + header +"\nDate: "+ date + "\nContext: "+context+"\nID: "+id+"\n\n\n";
+            while (rs.next()) {
+                header = rs.getString("header");
+                context = rs.getString("context");
+                date = rs.getDate("date");
+                id = rs.getInt("id");
+                stringToRemove = "Header " + ": " + header + "\nDate: " + date + "\nContext: " + context + "\nID: " + id + "\n\n\n";
             }
 
             return stringToRemove;
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-
-
 }
+
+

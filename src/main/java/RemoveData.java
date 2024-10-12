@@ -8,40 +8,36 @@ public class RemoveData {
        static DbData db = new DbData();
         public static void start() {
 
-            JLabel id = new JLabel("Enter an ID to remove the whole with");
+            JLabel id = new JLabel("Enter an ID to remove the whole data with");
             JFrame f = new JFrame("Remove Data");
             JButton removeBtn = new JButton("Remove");
-            JButton checkBtn = new JButton("Check");
-            JTextArea checkAreaResult = new JTextArea();
-            JTextPane checkIdArea = new JTextPane();
-
-
-            checkIdArea.setBounds(30,30,200,50);
-
-            checkBtn.setBounds(30,80,150,50);
-
-            checkAreaResult.setBounds(30,130,250,50);
+            JTextArea idArea = new JTextArea();
 
             removeBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    db.removeAllData(Integer.valueOf(checkIdArea.getText()));
+                    db.removeAllData(Integer.valueOf(idArea.getText()));
                 }
             });
-            checkBtn.addActionListener(new ActionListener() {
+
+            id.setBounds(60, 10, 350, 50);
+            idArea.setBounds(55, 50, 460, 40);
+            id.setLabelFor(idArea);
+
+            removeBtn.setBounds(45,120, 300 ,50);
+
+           /* checkBtn.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     checkAreaResult.append(db.getAllDataById(Integer.valueOf(checkIdArea.getText())));
 
                 }
-            });
+            });*/
 
             f.setVisible(true);
             f.add(removeBtn);
             f.add(id);
-            f.add(checkAreaResult);
-            f.add(checkBtn);
-            f.add(checkIdArea);
+            f.add(idArea);
             f.setSize(640, 720);
             f.setLayout(null);
         }
