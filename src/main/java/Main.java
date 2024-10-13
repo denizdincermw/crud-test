@@ -25,6 +25,8 @@ public class Main {
 
         switch(choice){
             case 1:getData();intro();
+
+            
                 break;
             case 2:setData();intro();
                 break;

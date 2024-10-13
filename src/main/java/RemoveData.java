@@ -24,7 +24,7 @@ public class RemoveData {
             idArea.setBounds(55, 50, 460, 40);
             id.setLabelFor(idArea);
 
-            removeBtn.setBounds(45,120, 300 ,50);
+            removeBtn.setBounds(55,580, 300 ,50);
 
            /* checkBtn.addActionListener(new ActionListener() {
                 @Override
